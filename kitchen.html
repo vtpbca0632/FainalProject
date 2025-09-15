@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kitchen Dashboard</title>
+  <!-- Bootstrap CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    body {
+      background-color: #f8f9fa;
+      padding-top: 70px;
+    }
+    .order-card {
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .order-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .status-new {
+      border-left: 5px solid #198754;
+    }
+    .status-completed {
+      border-left: 5px solid #6c757d;
+      opacity: 0.6;
+      text-decoration: line-through;
+    }
+    .status-preparing {
+      border-left: 5px solid #ffc107;
+    }
+    .status-ready {
+      border-left: 5px solid #17a2b8;
+    }
+    .priority-urgent {
+      border-left: 5px solid #dc3545;
+      animation: urgentPulse 2s infinite;
+    }
+    @keyframes urgentPulse {
+      0%, 100% { box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3); }
+      50% { box-shadow: 0 4px 20px rgba(220, 53, 69, 0.6); }
+    }
+    .timer {
+      background: #ffc107;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+    .stats-card {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .stats-icon {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+      z-index: 1000;
+      transform: translateX(400px);
+      transition: transform 0.3s ease;
+    }
+    .notification.show {
+      transform: translateX(0);
+    }
+    .progress-bar {
+      height: 8px;
+      background: #e9ecef;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #28a745, #20c997);
+      transition: width 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <i class="fas fa-utensils me-2"></i>Kitchen Dashboard
+      </a>
+      <div class="d-flex align-items-center">
+        <span class="text-white me-3">
+          <i class="fas fa-clock me-1"></i>
+          <span id="currentTime"></span>
+        </span>
+        <span class="text-white me-3">
+          <i class="fas fa-wifi me-1"></i>
+          <span id="connectionStatus">Online</span>
+        </span>
+        <button class="btn btn-outline-light btn-sm me-2" onclick="toggleFullscreen()">
+          <i class="fas fa-expand"></i>
+        </button>
+        <button class="btn btn-outline-light btn-sm" onclick="showHelp()">
+          <i class="fas fa-question-circle"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Statistics Row -->
+    <div class="row mb-4">
+      <div class="col-md-3">
+        <div class="stats-card">
+          <div class="stats-icon text-primary">
+            <i class="fas fa-clipboard-list"></i>
+          </div>
+          <h3 id="totalOrders">0</h3>
+          <p class="mb-0">Total Orders</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stats-card">
+          <div class="stats-icon text-warning">
+            <i class="fas fa-clock"></i>
+          </div>
+          <h3 id="pendingOrders">0</h3>
+          <p class="mb-0">Pending</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stats-card">
+          <div class="stats-icon text-info">
+            <i class="fas fa-fire"></i>
+          </div>
+          <h3 id="preparingOrders">0</h3>
+          <p class="mb-0">Preparing</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stats-card">
+          <div class="stats-icon text-success">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <h3 id="completedOrders">0</h3>
+          <p class="mb-0">Completed</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kitchen Timer -->
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <div class="stats-card">
+          <h5><i class="fas fa-stopwatch me-2"></i>Kitchen Timer</h5>
+          <div class="text-center">
+            <h2 id="kitchenTimer">00:00:00</h2>
+            <div class="mt-2">
+              <button class="btn btn-primary btn-sm me-2" onclick="startTimer()">
+                <i class="fas fa-play me-1"></i>Start
+              </button>
+              <button class="btn btn-secondary btn-sm me-2" onclick="pauseTimer()">
+                <i class="fas fa-pause me-1"></i>Pause
+              </button>
+              <button class="btn btn-danger btn-sm" onclick="resetTimer()">
+                <i class="fas fa-stop me-1"></i>Reset
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="stats-card">
+          <h5><i class="fas fa-chart-line me-2"></i>Performance Metrics</h5>
+          <div class="row">
+            <div class="col-6">
+              <p class="mb-1"><strong>Avg Prep Time:</strong></p>
+              <h4 id="avgPrepTime">0 min</h4>
+            </div>
+            <div class="col-6">
+              <p class="mb-1"><strong>Orders/Hour:</strong></p>
+              <h4 id="ordersPerHour">0</h4>
+            </div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="efficiencyBar" style="width: 75%"></div>
+          </div>
+          <small class="text-muted">Kitchen Efficiency: <span id="efficiencyPercent">75%</span></small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="row mb-4">
+      <div class="col-md-3 mb-2">
+        <input
+          id="searchInput"
+          type="text"
+          class="form-control"
+          placeholder="Search by customer or item"
+        />
+      </div>
+      <div class="col-md-2 mb-2">
+        <select id="statusFilter" class="form-select">
+          <option value="all">All Status</option>
+          <option value="new">New</option>
+          <option value="preparing">Preparing</option>
+          <option value="ready">Ready</option>
+          <option value="completed">Completed</option>
+        </select>
+      </div>
+      <div class="col-md-2 mb-2">
+        <select id="priorityFilter" class="form-select">
+          <option value="all">All Priority</option>
+          <option value="urgent">Urgent</option>
+          <option value="high">High</option>
+          <option value="normal">Normal</option>
+        </select>
+      </div>
+      <div class="col-md-2 mb-2">
+        <select id="tableFilter" class="form-select">
+          <option value="all">All Tables</option>
+        </select>
+      </div>
+      <div class="col-md-3 mb-2">
+        <div class="d-flex gap-2">
+          <button id="clearCompleted" class="btn btn-outline-danger btn-sm">
+            <i class="fas fa-trash me-1"></i>Clear Completed
+          </button>
+          <button id="refreshOrders" class="btn btn-outline-primary btn-sm">
+            <i class="fas fa-sync-alt me-1"></i>Refresh
+          </button>
+          <button id="exportOrders" class="btn btn-outline-success btn-sm">
+            <i class="fas fa-download me-1"></i>Export
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Orders Grid -->
+    <div id="orders" class="row g-3"></div>
+  </div>
+
+  <!-- Notification -->
+  <div id="notification" class="notification">
+    <div class="d-flex align-items-center">
+      <i class="fas fa-bell text-warning me-2"></i>
+      <span id="notificationText">New order received!</span>
+    </div>
+  </div>
+
+  <!-- Help Modal -->
+  <div class="modal fade" id="helpModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            <i class="fas fa-question-circle me-2"></i>Kitchen Dashboard Help
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+              <h6><i class="fas fa-keyboard me-2"></i>Keyboard Shortcuts</h6>
+              <ul class="list-unstyled">
+                <li><strong>Ctrl+R</strong> - Refresh orders</li>
+                <li><strong>Ctrl+S</strong> - Start first pending order</li>
+                <li><strong>Ctrl+E</strong> - Export orders</li>
+                <li><strong>F11</strong> - Toggle fullscreen</li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h6><i class="fas fa-info-circle me-2"></i>Features</h6>
+              <ul>
+                <li><strong>Real-time Order Tracking</strong> - Monitor order preparation times</li>
+                <li><strong>Smart Prioritization</strong> - Automatic order priority assignment</li>
+                <li><strong>Performance Analytics</strong> - Track kitchen efficiency metrics</li>
+                <li><strong>Kitchen Timer</strong> - Built-in timer for order tracking</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Sound -->
+  <audio
+    id="notifSound"
+    src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg"
+    preload="auto"
+  ></audio>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- LocalStorage Service -->
+  <script src="localStorageService.js"></script>
+
+  <script>
+    let seenCount = 0;
+    let orders = [];
+    let timer = { running: false, time: 0, interval: null };
+    let orderTimers = {};
+
+    function loadOrders() {
+      orders = localStorageService.getAllOrders();
+      updateTableFilter();
+      renderOrders();
+      updateStatistics();
+      playNotification();
+      prioritizeOrders();
+    }
+
+    function updateTableFilter() {
+      const tableSelect = document.getElementById('tableFilter');
+      const tables = [...new Set(orders.map(o => o?.table || 'Unassigned'))];
+      tableSelect.innerHTML =
+        '<option value="all">All Tables</option>' +
+        tables.map(t => `<option value="${t}">${t}</option>`).join('');
+    }
+
+    function renderOrders() {
+      const container = document.getElementById('orders');
+      container.innerHTML = '';
+
+      const searchText = document.getElementById('searchInput').value.toLowerCase();
+      const status = document.getElementById('statusFilter').value;
+      const priority = document.getElementById('priorityFilter').value;
+      const table = document.getElementById('tableFilter').value;
+
+      orders.forEach((order, idx) => {
+        if (!order || typeof order !== 'object') return;
+        const isNew = idx >= seenCount;
+        order.completed = order.completed || false;
+        order.status = order.status || 'new';
+
+        const customerName = (order.customer || '').toLowerCase();
+        const cartItems = Array.isArray(order.cart) ? order.cart : [];
+
+        // Filters
+        if (status !== 'all' && order.status !== status) return;
+        if (priority !== 'all' && order.priority !== priority) return;
+        if (table !== 'all' && (order.table || 'Unassigned') !== table) return;
+
+        if (
+          !(customerName.includes(searchText) ||
+            cartItems.some(i => (i.name || '').toLowerCase().includes(searchText)))
+        ) return;
+
+        // Card
+        const col = document.createElement('div');
+        col.className = 'col-md-6 col-lg-4';
+
+        const card = document.createElement('div');
+        card.className = 'card order-card p-3 ' +
+          (order.completed ? 'status-completed' : 
+           order.status === 'preparing' ? 'status-preparing' :
+           order.status === 'ready' ? 'status-ready' :
+           isNew ? 'status-new' : '') +
+          (order.priority === 'urgent' ? ' priority-urgent' : '');
+
+        const total = calculateTotal(order.cart);
+        const timeAgo = getTimeAgo(order.time);
+        const prepTime = order.startTime ? getTimeAgo(order.startTime) : '';
+
+        card.innerHTML = `
+          <div class="d-flex justify-content-between mb-2">
+            <div>
+              <h5 class="mb-0">Order #${idx + 1}</h5>
+              <small class="text-muted">${timeAgo}</small>
+              ${order.priority === 'urgent' ? '<br><span class="badge bg-danger">URGENT</span>' : ''}
+              ${order.priority === 'high' ? '<br><span class="badge bg-warning">HIGH</span>' : ''}
+            </div>
+            <div class="text-end">
+              <span class="badge bg-${getStatusColor(order.status)}">${order.status.toUpperCase()}</span>
+              ${order.startTime ? `<br><div class="timer">${prepTime}</div>` : ''}
+            </div>
+          </div>
+          <p class="mb-1"><strong>Customer:</strong> ${order.customer || '-'}</p>
+          <p class="mb-1"><strong>Table:</strong> ${order.table || '-'}</p>
+          <ul class="list-group list-group-flush mb-2"></ul>
+          <div class="d-flex justify-content-between mb-2">
+            <strong>Total:</strong>
+            <strong>₹${total}</strong>
+          </div>
+          <div class="d-flex gap-1">
+            ${getActionButtons(order, idx)}
+          </div>
+        `;
+
+        const list = card.querySelector('ul');
+        cartItems.forEach(item => {
+          const li = document.createElement('li');
+          li.className = 'list-group-item d-flex justify-content-between';
+          const qty = item.qty || 0;
+          const price = item.price || 0;
+          const name = item.name || 'Unknown';
+          const line = qty * price;
+          li.innerHTML = `<span>${name} x${qty}</span><span>₹${line}</span>`;
+          list.appendChild(li);
+        });
+
+        col.appendChild(card);
+        container.appendChild(col);
+      });
+
+      seenCount = orders.length;
+    }
+
+    function getStatusColor(status) {
+      switch(status) {
+        case 'new': return 'primary';
+        case 'preparing': return 'warning';
+        case 'ready': return 'info';
+        case 'completed': return 'success';
+        default: return 'secondary';
+      }
+    }
+
+    function getActionButtons(order, index) {
+      let buttons = '';
+      
+      if (order.status === 'new' || !order.status) {
+        buttons += `<button class="btn btn-sm btn-primary" onclick="startOrder(${index})">
+          <i class="fas fa-play me-1"></i>Start
+        </button>`;
+      }
+      
+      if (order.status === 'preparing') {
+        buttons += `<button class="btn btn-sm btn-info" onclick="markReady(${index})">
+          <i class="fas fa-check me-1"></i>Ready
+        </button>`;
+      }
+      
+      if (order.status === 'ready') {
+        buttons += `<button class="btn btn-sm btn-success" onclick="completeOrder(${index})">
+          <i class="fas fa-check-double me-1"></i>Complete
+        </button>`;
+      }
+      
+      buttons += `<button class="btn btn-sm btn-outline-secondary" onclick="viewOrderDetails(${index})">
+        <i class="fas fa-eye me-1"></i>View
+      </button>`;
+      
+      return buttons;
+    }
+
+    function getTimeAgo(dateString) {
+      if (!dateString) return '';
+      const now = new Date();
+      const date = new Date(dateString);
+      const diffInMinutes = Math.floor((now - date) / (1000 * 60));
+      
+      if (diffInMinutes < 1) return 'Just now';
+      if (diffInMinutes < 60) return `${diffInMinutes} min ago`;
+      if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)} hours ago`;
+      return `${Math.floor(diffInMinutes / 1440)} days ago`;
+    }
+
+    function viewOrderDetails(index) {
+      const order = orders[index];
+      const total = calculateTotal(order.cart);
+      
+      const details = `
+        <strong>Order #${index + 1}</strong><br>
+        <strong>Customer:</strong> ${order.customer || 'Unknown'}<br>
+        <strong>Table:</strong> ${order.table || 'Takeaway'}<br>
+        <strong>Time:</strong> ${getTimeAgo(order.time)}<br>
+        <strong>Status:</strong> ${order.status || 'new'}<br>
+        <strong>Priority:</strong> ${order.priority || 'normal'}<br>
+        <strong>Total:</strong> ₹${total}<br><br>
+        <strong>Items:</strong><br>
+        ${order.cart?.map(item => `• ${item.name} x${item.qty} - ₹${item.price * item.qty}`).join('<br>') || 'No items'}
+      `;
+      
+      alert(details);
+    }
+
+    function updateStatistics() {
+      document.getElementById('totalOrders').textContent = orders.length;
+      document.getElementById('pendingOrders').textContent = 
+        orders.filter(o => o.status === 'new' || !o.status).length;
+      document.getElementById('preparingOrders').textContent = 
+        orders.filter(o => o.status === 'preparing').length;
+      document.getElementById('completedOrders').textContent = 
+        orders.filter(o => o.status === 'completed' || o.completed).length;
+      
+      // Calculate performance metrics
+      const completedOrders = orders.filter(o => o.status === 'completed' || o.completed);
+      const avgPrepTime = completedOrders.length > 0 ? 
+        Math.round(completedOrders.reduce((sum, order) => {
+          if (order.startTime && order.completedTime) {
+            return sum + (new Date(order.completedTime) - new Date(order.startTime)) / 1000 / 60;
+          }
+          return sum;
+        }, 0) / completedOrders.length) : 0;
+      
+      document.getElementById('avgPrepTime').textContent = `${avgPrepTime} min`;
+      
+      const ordersPerHour = orders.length > 0 ? 
+        Math.round(orders.length / Math.max(1, (new Date() - new Date(orders[0]?.time || Date.now())) / 1000 / 60 / 60)) : 0;
+      
+      document.getElementById('ordersPerHour').textContent = ordersPerHour;
+      
+      // Update efficiency
+      const efficiency = Math.min(100, Math.max(0, 100 - (avgPrepTime - 15) * 2));
+      document.getElementById('efficiencyBar').style.width = `${efficiency}%`;
+      document.getElementById('efficiencyPercent').textContent = `${efficiency}%`;
+    }
+
+    function prioritizeOrders() {
+      orders.forEach(order => {
+        if (!order.priority) {
+          let priority = 'normal';
+          
+          // VIP customers get high priority
+          if (order.customer && order.customer.toLowerCase().includes('vip')) {
+            priority = 'urgent';
+          }
+          // Large orders get high priority
+          else if (calculateTotal(order.cart) > 1000) {
+            priority = 'high';
+          }
+          // Orders waiting too long get urgent priority
+          else if (order.time) {
+            const waitTime = (new Date() - new Date(order.time)) / 1000 / 60; // minutes
+            if (waitTime > 15) {
+              priority = 'urgent';
+            } else if (waitTime > 10) {
+              priority = 'high';
+            }
+          }
+          
+          order.priority = priority;
+        }
+      });
+      saveOrders();
+    }
+
+    function calculateTotal(cart) {
+      return cart?.reduce((sum, item) => sum + (item.price * item.qty), 0) || 0;
+    }
+
+    function saveOrders() {
+      // Update each order in localStorage service
+      orders.forEach(order => {
+        if (order.id) {
+          localStorageService.updateOrder(order.id, order);
+        }
+      });
+      updateStatistics();
+    }
+
+    function showNotification(message, type = 'info') {
+      const notification = document.getElementById('notification');
+      const text = document.getElementById('notificationText');
+      text.textContent = message;
+      notification.classList.add('show');
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
+    }
+
+    function playNotification() {
+      if (orders.length > seenCount) {
+        document.getElementById('notifSound').play();
+        showNotification(`New order received! Total: ${orders.length}`);
+      }
+    }
+
+    // Kitchen Timer Functions
+    function startTimer() {
+      if (!timer.running) {
+        timer.running = true;
+        timer.interval = setInterval(() => {
+          timer.time++;
+          updateTimerDisplay();
+        }, 1000);
+      }
+    }
+
+    function pauseTimer() {
+      timer.running = false;
+      if (timer.interval) {
+        clearInterval(timer.interval);
+        timer.interval = null;
+      }
+    }
+
+    function resetTimer() {
+      pauseTimer();
+      timer.time = 0;
+      updateTimerDisplay();
+    }
+
+    function updateTimerDisplay() {
+      const hours = Math.floor(timer.time / 3600);
+      const minutes = Math.floor((timer.time % 3600) / 60);
+      const seconds = timer.time % 60;
+      
+      document.getElementById('kitchenTimer').textContent = 
+        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    // Order Action Functions
+    function startOrder(index) {
+      orders[index].status = 'preparing';
+      orders[index].startTime = new Date().toISOString();
+      saveOrders();
+      renderOrders();
+      showNotification(`Order #${index + 1} started preparing`);
+    }
+
+    function markReady(index) {
+      orders[index].status = 'ready';
+      orders[index].readyTime = new Date().toISOString();
+      saveOrders();
+      renderOrders();
+      showNotification(`Order #${index + 1} is ready!`);
+    }
+
+    function completeOrder(index) {
+      orders[index].status = 'completed';
+      orders[index].completedTime = new Date().toISOString();
+      saveOrders();
+      renderOrders();
+      showNotification(`Order #${index + 1} completed`);
+    }
+
+    // Utility Functions
+    function updateCurrentTime() {
+      const now = new Date();
+      document.getElementById('currentTime').textContent = 
+        now.toLocaleTimeString();
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    function showHelp() {
+      const modal = new bootstrap.Modal(document.getElementById('helpModal'));
+      modal.show();
+    }
+
+    function exportOrders() {
+      const dataStr = JSON.stringify(orders, null, 2);
+      const dataBlob = new Blob([dataStr], {type: 'application/json'});
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'orders-export.json';
+      link.click();
+      URL.revokeObjectURL(url);
+      showNotification('Orders exported successfully');
+    }
+
+    // Event Listeners
+    ['searchInput', 'statusFilter', 'priorityFilter', 'tableFilter'].forEach(id => {
+      const el = document.getElementById(id);
+      el.addEventListener('input', renderOrders);
+      el.addEventListener('change', renderOrders);
+    });
+
+    document.getElementById('clearCompleted').addEventListener('click', () => {
+      const completedOrders = orders.filter(o => o && (o.completed || o.status === 'completed'));
+      completedOrders.forEach(order => {
+        if (order.id) {
+          localStorageService.deleteOrder(order.id);
+        }
+      });
+      orders = localStorageService.getAllOrders();
+      renderOrders();
+      showNotification('Completed orders cleared');
+    });
+
+    document.getElementById('refreshOrders').addEventListener('click', () => {
+      loadOrders();
+      showNotification('Orders refreshed');
+    });
+
+    document.getElementById('exportOrders').addEventListener('click', exportOrders);
+
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', function(e) {
+      if (e.ctrlKey || e.metaKey) {
+        switch(e.key) {
+          case 'r':
+            e.preventDefault();
+            loadOrders();
+            showNotification('Orders refreshed');
+            break;
+          case 's':
+            e.preventDefault();
+            const pendingOrders = orders.filter(o => o.status === 'new' || !o.status);
+            if (pendingOrders.length > 0) {
+              startOrder(orders.indexOf(pendingOrders[0]));
+            }
+            break;
+          case 'e':
+            e.preventDefault();
+            exportOrders();
+            break;
+        }
+      }
+    });
+
+    // Initialize
+    window.addEventListener('load', () => {
+      loadOrders();
+      updateCurrentTime();
+      setInterval(updateCurrentTime, 1000);
+      setInterval(loadOrders, 5000);
+    });
+  </script>
+</body>
+</html>

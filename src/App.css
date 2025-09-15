@@ -1,0 +1,260 @@
+/* App.css - Main application styles */
+
+.App {
+  min-height: 100vh;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Unique Background Design */
+.App::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  opacity: 0.1;
+}
+
+.App::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+  animation: backgroundFloat 20s ease-in-out infinite;
+}
+
+/* Floating geometric shapes */
+.App::before {
+  content: '';
+  position: fixed;
+  top: 10%;
+  right: 10%;
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  border-radius: 50%;
+  opacity: 0.1;
+  animation: float 6s ease-in-out infinite;
+  z-index: -1;
+}
+
+.App::after {
+  content: '';
+  position: fixed;
+  bottom: 15%;
+  left: 5%;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(45deg, #f093fb, #f5576c);
+  border-radius: 20px;
+  opacity: 0.1;
+  animation: float 8s ease-in-out infinite reverse;
+  z-index: -1;
+}
+
+/* Additional floating elements */
+.App::before {
+  content: '';
+  position: fixed;
+  top: 60%;
+  left: 15%;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(45deg, #4facfe, #00f2fe);
+  border-radius: 50%;
+  opacity: 0.08;
+  animation: float 10s ease-in-out infinite;
+  z-index: -1;
+}
+
+/* Background animations */
+@keyframes backgroundFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-20px) rotate(1deg);
+  }
+  66% {
+    transform: translateY(10px) rotate(-1deg);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
+}
+
+.App.light {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  color: #212529;
+}
+
+.App.dark {
+  background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 50%, #2d2d2d 100%);
+  color: #ffffff;
+}
+
+/* Dark mode specific background elements */
+.App.dark::before {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  opacity: 0.05;
+}
+
+.App.dark::after {
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.2) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.2) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.15) 0%, transparent 50%);
+}
+
+/* Enhanced navbar styling for dark mode */
+.App.dark .navbar {
+  background: rgba(45, 45, 45, 0.95) !important;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #404040;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Enhanced card styling for dark mode */
+.App.dark .card {
+  background: rgba(45, 45, 45, 0.95);
+  backdrop-filter: blur(10px);
+  border-color: #404040;
+  color: #ffffff;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Enhanced form controls for dark mode */
+.App.dark .form-control {
+  background: rgba(61, 61, 61, 0.95);
+  backdrop-filter: blur(10px);
+  border-color: #404040;
+  color: #ffffff;
+}
+
+.App.dark .form-control:focus {
+  background: rgba(61, 61, 61, 0.95);
+  border-color: #007bff;
+  color: #ffffff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.App.dark .form-select {
+  background: rgba(61, 61, 61, 0.95);
+  backdrop-filter: blur(10px);
+  border-color: #404040;
+  color: #ffffff;
+}
+
+/* Enhanced button styling for dark mode */
+.App.dark .btn-outline-primary {
+  color: #007bff;
+  border-color: #007bff;
+  background: rgba(0, 123, 255, 0.1);
+}
+
+.App.dark .btn-outline-primary:hover {
+  background: rgba(0, 123, 255, 0.9);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+}
+
+.App.dark .btn-outline-secondary {
+  color: #6c757d;
+  border-color: #6c757d;
+  background: rgba(108, 117, 125, 0.1);
+}
+
+.App.dark .btn-outline-secondary:hover {
+  background: rgba(108, 117, 125, 0.9);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+}
+
+/* Enhanced text styling for dark mode */
+.App.dark .text-muted {
+  color: #adb5bd !important;
+}
+
+.App.dark .border {
+  border-color: #404040 !important;
+}
+
+/* Enhanced table styling for dark mode */
+.App.dark .table {
+  color: #ffffff;
+  background: rgba(45, 45, 45, 0.95);
+  backdrop-filter: blur(10px);
+}
+
+.App.dark .table-striped > tbody > tr:nth-of-type(odd) > td {
+  background: rgba(61, 61, 61, 0.95);
+}
+
+.App.dark .table-hover > tbody > tr:hover > td {
+  background: rgba(77, 77, 77, 0.95);
+}
+
+/* Custom scrollbar for dark mode */
+.App.dark ::-webkit-scrollbar {
+  width: 8px;
+}
+
+.App.dark ::-webkit-scrollbar-track {
+  background: rgba(45, 45, 45, 0.95);
+}
+
+.App.dark ::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 4px;
+}
+
+.App.dark ::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
+/* Loading spinner styling */
+.loading-spinner {
+  color: #667eea;
+}
+
+/* Responsive container adjustments */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+
+/* Global styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

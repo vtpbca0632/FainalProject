@@ -1,0 +1,107 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- Added viewport for responsive -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+  <title>QR Restaurant Menu</title>
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-9ndCyUa6mY5S2mB6N1mNQw7qq+Q4/6prw5Xl5M6p0EHI5L3o9Yp2XVvo4FQTIJnZ"
+    crossorigin="anonymous"
+  />
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="index.css">
+</head>
+<body class="light">
+  
+  <!-- Wrap all content in a responsive container -->
+  <div class="container-fluid p-0">
+
+  <!-- Fixed Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark custom-navbar fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand">🍽️ Food King</a>
+      <div class="d-flex align-items-center ms-auto">
+        <a class="btn btn-outline-primary me-2" href="HOME1.html">🏠 Home</a>
+        <button class="btn btn-outline-primary position-relative me-2" data-bs-toggle="offcanvas" href="#cartOffcanvas" role="button">
+          🛒 Order <span id="orderCount" class="position-absolute top-0 start-100 translate-middle badge bg-danger">0</span>
+        </button>
+        <button id="favBtn" class="btn btn-outline-danger position-relative me-3">
+          ♥ Favorites <span id="favCount" class="position-absolute top-0 start-100 translate-middle badge bg-danger">0</span>
+        </button>
+        <form class="d-flex align-items-center me-2">
+          <input id="searchInput" class="form-control form-control-sm me-2" type="search" placeholder="Search">
+          <select id="catFilter" class="form-select form-select-sm me-2">
+            <option value="">All Categories</option>
+          </select>
+          <span class="toggle-mode badge bg-secondary">🌙</span>
+        </form>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+      <div class="collapse navbar-collapse justify-content-end" id="mainNav">
+        <ul class="navbar-nav mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact Us</a></li>
+          <li class="nav-item"><a class="nav-link" href="history.html">History</a></li>
+          
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Customer & Table Inputs Below Navbar -->
+  <div class="container mt-3">
+    <div class="row">
+      <div class="col-md-6">
+        <input id="customerName" class="form-control form-control-sm" type="text" placeholder="Customer Name">
+      </div>
+      <div class="col-md-6">
+        <input id="tableNo" class="form-control form-control-sm" type="text" placeholder="Table No.">
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container mt-0">
+    <div class="row" id="dish-container"></div>
+  </div>
+  
+
+  <!-- Cart Offcanvas -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas" aria-labelledby="cartOffcanvasLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title">🍽️ Digital Menu</h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body d-flex flex-column">
+      <h6 id="cartOffcanvasLabel">🛒 Your Order</h6>
+      <div id="cart-items" class="mb-3"></div>
+      <div class="mt-auto">
+        <div class="d-flex justify-content-between mb-2">
+          <strong>Total:</strong> <span>₹<span id="cart-total">0</span></span>
+        </div>
+        <button class="btn btn-success w-100 mb-2" onclick="placeOrder()">Place Order</button>
+        <button class="btn btn-outline-secondary w-100" onclick="printReceipt()">Print Receipt</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS Files -->
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- LocalStorage Service -->
+  <script src="localStorageService.js"></script>
+  <!-- Custom Script -->
+  <script src="index.js"></script>
+</body>
+</html>

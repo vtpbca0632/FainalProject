@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Digital Menu - Premium Food Experience</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Animate.css -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <!-- AOS -->
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary-black: #000000;
+      --primary-white: #ffffff;
+      --accent-gray: #333333;
+      --light-gray: #f8f9fa;
+      --border-gray: #e0e0e0;
+      --text-dark: #1a1a1a;
+      --shadow-light: rgba(0,0,0,0.1);
+      --shadow-dark: rgba(0,0,0,0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--primary-white);
+      color: var(--primary-black);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--light-gray);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--accent-gray);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary-black);
+    }
+
+    /* Navbar Styles */
+    .navbar {
+      background: rgba(0,0,0,0.95) !important;
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-gray);
+      transition: all 0.4s ease;
+      padding: 1rem 0;
+    }
+
+    .navbar.scrolled {
+      background: rgba(0,0,0,0.98) !important;
+      box-shadow: 0 4px 20px var(--shadow-dark);
+    }
+
+    .navbar-brand {
+      font-family: 'Playfair Display', serif;
+      font-weight: 900;
+      font-size: 1.8rem;
+      color: var(--primary-white) !important;
+      text-shadow: 2px 2px 4px var(--shadow-dark);
+      transition: all 0.3s ease;
+    }
+
+    .navbar-brand:hover {
+      transform: scale(1.05);
+      text-shadow: 3px 3px 6px var(--shadow-dark);
+    }
+
+    .navbar-nav .nav-link {
+      color: var(--primary-white) !important;
+      font-weight: 600;
+      margin: 0 0.5rem;
+      padding: 0.5rem 1rem !important;
+      border-radius: 25px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .navbar-nav .nav-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: var(--primary-white);
+      transition: left 0.3s ease;
+      z-index: -1;
+    }
+
+    .navbar-nav .nav-link:hover::before {
+      left: 0;
+    }
+
+    .navbar-nav .nav-link:hover {
+      color: var(--primary-black) !important;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px var(--shadow-light);
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--primary-black) 0%, var(--accent-gray) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('hero-bg.jpeg') center/cover no-repeat;
+      opacity: 0.3;
+      animation: heroZoom 20s ease-in-out infinite alternate;
+    }
+
+    @keyframes heroZoom {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.1); }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: var(--primary-white);
+      max-width: 800px;
+      padding: 2rem;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 900;
+      font-size: clamp(3rem, 8vw, 6rem);
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      text-shadow: 3px 3px 6px var(--shadow-dark);
+      animation: titleReveal 1.5s ease-out;
+    }
+
+    @keyframes titleReveal {
+      0% {
+        opacity: 0;
+        transform: translateY(50px) scale(0.8);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1.2rem, 3vw, 1.8rem);
+      font-weight: 400;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+      animation: subtitleReveal 1.5s ease-out 0.3s both;
+    }
+
+    @keyframes subtitleReveal {
+      0% {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero-btn {
+      background: var(--primary-white);
+      color: var(--primary-black);
+      border: none;
+      padding: 1rem 2.5rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-radius: 50px;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      animation: btnReveal 1.5s ease-out 0.6s both;
+    }
+
+    @keyframes btnReveal {
+      0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.8);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .hero-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: var(--primary-black);
+      transition: left 0.4s ease;
+      z-index: -1;
+    }
+
+    .hero-btn:hover::before {
+      left: 0;
+    }
+
+    .hero-btn:hover {
+      color: var(--primary-white);
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 10px 30px var(--shadow-dark);
+    }
+
+    /* Floating Elements */
+    .floating-element {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      background: var(--primary-white);
+      border-radius: 50%;
+      opacity: 0.1;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .floating-element:nth-child(1) {
+      top: 20%;
+      left: 10%;
+      animation-delay: 0s;
+    }
+
+    .floating-element:nth-child(2) {
+      top: 60%;
+      right: 15%;
+      animation-delay: 2s;
+    }
+
+    .floating-element:nth-child(3) {
+      bottom: 20%;
+      left: 20%;
+      animation-delay: 4s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+    }
+
+    /* Features Section */
+    .features {
+      padding: 6rem 0;
+      background: var(--light-gray);
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 900;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      text-align: center;
+      margin-bottom: 4rem;
+      color: var(--primary-black);
+      position: relative;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: var(--primary-black);
+      border-radius: 2px;
+    }
+
+    .feature-card {
+      background: var(--primary-white);
+      border: 2px solid var(--primary-black);
+      border-radius: 20px;
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: var(--primary-black);
+      transition: left 0.4s ease;
+      z-index: -1;
+    }
+
+    .feature-card:hover::before {
+      left: 0;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-15px) scale(1.03);
+      box-shadow: 0 20px 40px var(--shadow-dark);
+    }
+
+    .feature-card:hover .feature-icon,
+    .feature-card:hover .feature-title,
+    .feature-card:hover .feature-text {
+      color: var(--primary-white);
+    }
+
+    .feature-icon {
+      font-size: 3rem;
+      color: var(--primary-black);
+      margin-bottom: 1.5rem;
+      transition: all 0.4s ease;
+    }
+
+    .feature-title {
+      font-weight: 700;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--primary-black);
+      transition: all 0.4s ease;
+    }
+
+    .feature-text {
+      color: var(--accent-gray);
+      transition: all 0.4s ease;
+    }
+
+    /* Offers Section */
+    .offers {
+      padding: 6rem 0;
+      background: var(--primary-black);
+      color: var(--primary-white);
+    }
+
+    .offer-card {
+      background: var(--primary-white);
+      color: var(--primary-black);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .offer-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 20px 40px var(--shadow-dark);
+    }
+
+    .offer-image {
+      height: 250px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .offer-image::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, transparent, rgba(0,0,0,0.3));
+      transition: all 0.4s ease;
+    }
+
+    .offer-card:hover .offer-image::before {
+      background: linear-gradient(45deg, transparent, rgba(0,0,0,0.6));
+    }
+
+    .offer-content {
+      padding: 2rem;
+    }
+
+    .offer-title {
+      font-weight: 700;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .offer-price {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--accent-gray);
+      margin-bottom: 1rem;
+    }
+
+    .offer-btn {
+      background: var(--primary-black);
+      color: var(--primary-white);
+      border: none;
+      padding: 0.8rem 2rem;
+      border-radius: 25px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .offer-btn:hover {
+      background: var(--accent-gray);
+      color: var(--primary-white);
+      transform: translateY(-2px);
+    }
+
+    /* Contact Section */
+    .contact {
+      padding: 6rem 0;
+      background: var(--light-gray);
+    }
+
+    .contact-form {
+      background: var(--primary-white);
+      border: 2px solid var(--primary-black);
+      border-radius: 20px;
+      padding: 3rem;
+      box-shadow: 0 10px 30px var(--shadow-light);
+    }
+
+    .form-control {
+      border: 2px solid var(--border-gray);
+      border-radius: 10px;
+      padding: 1rem;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary-black);
+      box-shadow: 0 0 0 0.2rem var(--shadow-light);
+    }
+
+    .contact-btn {
+      background: var(--primary-black);
+      color: var(--primary-white);
+      border: none;
+      padding: 1rem 2.5rem;
+      border-radius: 25px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .contact-btn:hover {
+      background: var(--accent-gray);
+      transform: translateY(-2px);
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--primary-black);
+      color: var(--primary-white);
+      padding: 3rem 0 1rem;
+      text-align: center;
+    }
+
+    .social-links a {
+      color: var(--primary-white);
+      font-size: 1.5rem;
+      margin: 0 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .social-links a:hover {
+      color: var(--border-gray);
+      transform: translateY(-3px);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 3rem;
+      }
+      
+      .hero-subtitle {
+        font-size: 1.2rem;
+      }
+      
+      .feature-card {
+        margin-bottom: 2rem;
+      }
+      
+      .contact-form {
+        padding: 2rem;
+      }
+    }
+
+    /* Loading Animation */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--primary-black);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading-spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid var(--primary-white);
+      border-top: 4px solid transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Text Reveal Animation */
+    .text-reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease;
+    }
+
+    .text-reveal.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Hover Effects */
+    .hover-lift {
+      transition: transform 0.3s ease;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-5px);
+    }
+
+    /* Glow Effect */
+    .glow {
+      transition: all 0.3s ease;
+    }
+
+    .glow:hover {
+      box-shadow: 0 0 20px var(--primary-black);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg fixed-top" id="mainNavbar">
+    <div class="container">
+      <a class="navbar-brand" href="#hero">
+        <i class="fas fa-utensils me-2"></i>Digital Menu
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#hero">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#features">Features</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#offers">Offers</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">Order Now</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#contact">Contact</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="hero" class="hero">
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    
+    <div class="hero-content">
+      <h1 class="hero-title text-reveal">
+        Premium Food<br>
+        <span style="color: var(--primary-white);">Experience</span>
+      </h1>
+      <p class="hero-subtitle text-reveal">
+        Discover authentic flavors, crafted with passion and served with excellence
+      </p>
+      <a href="#features" class="hero-btn glow">
+        <i class="fas fa-arrow-down me-2"></i>Explore Features
+      </a>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="features">
+    <div class="container">
+      <h2 class="section-title text-reveal">Why Choose Us</h2>
+      <div class="row">
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+          <div class="feature-card hover-lift">
+            <div class="feature-icon">
+              <i class="fas fa-star"></i>
+            </div>
+            <h3 class="feature-title">Premium Quality</h3>
+            <p class="feature-text">Handpicked ingredients and expert chefs ensure every dish is a masterpiece.</p>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+          <div class="feature-card hover-lift">
+            <div class="feature-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <h3 class="feature-title">Fast Service</h3>
+            <p class="feature-text">Quick preparation and delivery so you never have to wait long for your meal.</p>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+          <div class="feature-card hover-lift">
+            <div class="feature-icon">
+              <i class="fas fa-heart"></i>
+            </div>
+            <h3 class="feature-title">Made with Love</h3>
+            <p class="feature-text">Every dish is prepared with care and attention to detail, just like home cooking.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Offers Section -->
+  <section id="offers" class="offers">
+    <div class="container">
+      <h2 class="section-title text-reveal" style="color: var(--primary-white);">Special Offers</h2>
+      <div class="row">
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+          <div class="offer-card">
+            <div class="offer-image" style="background-image: url('image1.png');"></div>
+            <div class="offer-content">
+              <h3 class="offer-title">Combo Meal</h3>
+              <p>Burger + Fries + Drink</p>
+              <div class="offer-price">₹299</div>
+              <p class="text-muted"><del>₹399</del> Save ₹100</p>
+              <a href="index.html" class="offer-btn">Order Now</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+          <div class="offer-card">
+            <div class="offer-image" style="background-image: url('image2.png');"></div>
+            <div class="offer-content">
+              <h3 class="offer-title">Family Feast</h3>
+              <p>4 Pizzas + 2 Sides</p>
+              <div class="offer-price">₹999</div>
+              <p class="text-muted"><del>₹1299</del> Save ₹300</p>
+              <a href="index.html" class="offer-btn">Grab Deal</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+          <div class="offer-card">
+            <div class="offer-image" style="background-image: url('image3.png');"></div>
+            <div class="offer-content">
+              <h3 class="offer-title">Midnight Munchies</h3>
+              <p>Flat 30% off on all orders</p>
+              <div class="offer-price">30% OFF</div>
+              <p class="text-muted">12 AM - 4 AM only</p>
+              <a href="index.html" class="offer-btn">Order Late Night</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="contact">
+    <div class="container">
+      <h2 class="section-title text-reveal">Get In Touch</h2>
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="contact-form">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <input type="text" class="form-control" placeholder="Your Name" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <input type="email" class="form-control" placeholder="Your Email" required>
+              </div>
+            </div>
+            <div class="mb-3">
+              <input type="text" class="form-control" placeholder="Subject" required>
+            </div>
+            <div class="mb-3">
+              <textarea class="form-control" rows="5" placeholder="Your Message" required></textarea>
+            </div>
+            <div class="text-center">
+              <button type="submit" class="contact-btn">
+                <i class="fas fa-paper-plane me-2"></i>Send Message
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="social-links mb-3">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-youtube"></i></a>
+      </div>
+      <p>&copy; 2025 Digital Menu. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  
+  <script>
+    // Loading Animation
+    window.addEventListener('load', () => {
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      loadingOverlay.style.opacity = '0';
+      setTimeout(() => {
+        loadingOverlay.style.display = 'none';
+      }, 500);
+    });
+
+    // Navbar Scroll Effect
+    window.addEventListener('scroll', () => {
+      const navbar = document.getElementById('mainNavbar');
+      if (window.scrollY > 100) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
+    // Text Reveal Animation
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.text-reveal').forEach(el => {
+      observer.observe(el);
+    });
+
+    // Smooth Scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Parallax Effect
+    window.addEventListener('scroll', () => {
+      const scrolled = window.pageYOffset;
+      const parallaxElements = document.querySelectorAll('.floating-element');
+      
+      parallaxElements.forEach((element, index) => {
+        const speed = 0.5 + (index * 0.1);
+        element.style.transform = `translateY(${scrolled * speed}px)`;
+      });
+    });
+
+    // AOS Initialization
+    AOS.init({
+      duration: 1000,
+      once: true,
+      offset: 100
+    });
+
+    // Interactive Elements
+    document.querySelectorAll('.feature-card').forEach(card => {
+      card.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-15px) scale(1.03)';
+      });
+      
+      card.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0) scale(1)';
+      });
+    });
+
+    // Form Submission
+    document.querySelector('.contact-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Add success animation
+      const btn = this.querySelector('.contact-btn');
+      btn.innerHTML = '<i class="fas fa-check me-2"></i>Message Sent!';
+      btn.style.background = '#28a745';
+      
+      setTimeout(() => {
+        btn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Send Message';
+        btn.style.background = '';
+        this.reset();
+      }, 3000);
+    });
+
+    // Add some dynamic content
+    document.addEventListener('DOMContentLoaded', () => {
+      // Add floating particles
+      for (let i = 0; i < 20; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'floating-element';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 5 + 's';
+        particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+        document.querySelector('.hero').appendChild(particle);
+      }
+    });
+  </script>
+</body>
+</html>

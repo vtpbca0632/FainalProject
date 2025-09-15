@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Favorites - Digital Menu</title>
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Animate.css -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  
+  <style>
+    body {
+      background: #ffffff;
+      font-weight: 700;
+      color: #000000;
+      padding-top: 80px;
+    }
+    
+    .navbar {
+      background: #000000 !important;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    
+    .navbar-brand {
+      color: white !important;
+      font-weight: 900;
+      font-size: 1.2rem;
+    }
+    
+    .navbar-nav .nav-link {
+      color: white !important;
+      font-weight: 700;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
+    
+    .navbar-nav .nav-link:hover {
+      color: #cccccc !important;
+    }
+    
+    .hero-section {
+      background: linear-gradient(135deg, #000000 0%, #333333 100%);
+      color: white;
+      padding: 3rem 0;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .hero-section h1 {
+      font-weight: 900;
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    
+    .hero-section p {
+      font-weight: 700;
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+    
+    .favorites-container {
+      padding: 2rem 0;
+    }
+    
+    .favorite-card {
+      background: #ffffff;
+      border: 2px solid #000000;
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      transition: transform .3s, box-shadow .3s;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    
+    .favorite-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    }
+    
+    .favorite-card .card-img-top {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      object-position: center;
+    }
+    
+    .favorite-card .card-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1.5rem;
+    }
+    
+    .favorite-card .card-title {
+      font-weight: 900;
+      color: #000000;
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .favorite-card .card-text {
+      font-weight: 700;
+      color: #000000;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .favorite-card .badge-cat {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #000000;
+      color: white;
+      font-size: 0.75rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 25px;
+      font-weight: 700;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: auto;
+    }
+    
+    .btn-like {
+      background: #ff4757;
+      border: 2px solid #ff4757;
+      color: white;
+      border-radius: 50px;
+      padding: 0.5rem 1rem;
+      font-weight: 700;
+      transition: all 0.3s ease;
+      flex: 1;
+    }
+    
+    .btn-like:hover {
+      background: #ff3742;
+      border-color: #ff3742;
+      color: white;
+      transform: scale(1.05);
+    }
+    
+    .btn-like.liked {
+      background: #ff6b7a;
+      border-color: #ff6b7a;
+    }
+    
+    .btn-add-to-cart {
+      background: #000000;
+      border: 2px solid #000000;
+      color: white;
+      border-radius: 50px;
+      padding: 0.5rem 1rem;
+      font-weight: 700;
+      transition: all 0.3s ease;
+      flex: 2;
+    }
+    
+    .btn-add-to-cart:hover {
+      background: #333333;
+      border-color: #333333;
+      color: white;
+      transform: scale(1.05);
+    }
+    
+    .btn-remove {
+      background: #ffffff;
+      border: 2px solid #ff4757;
+      color: #ff4757;
+      border-radius: 50px;
+      padding: 0.5rem 1rem;
+      font-weight: 700;
+      transition: all 0.3s ease;
+      flex: 1;
+    }
+    
+    .btn-remove:hover {
+      background: #ff4757;
+      color: white;
+      transform: scale(1.05);
+    }
+    
+    .rating-section {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .rating-stars {
+      color: #ffd700;
+      font-size: 1.1rem;
+    }
+    
+    .rating-text {
+      font-weight: 700;
+      color: #000000;
+      font-size: 0.9rem;
+    }
+    
+    .empty-favorites {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: #f8f9fa;
+      border-radius: 1rem;
+      border: 2px dashed #dee2e6;
+    }
+    
+    .empty-favorites h3 {
+      font-weight: 900;
+      color: #000000;
+      margin-bottom: 1rem;
+    }
+    
+    .empty-favorites p {
+      font-weight: 700;
+      color: #6c757d;
+      margin-bottom: 2rem;
+    }
+    
+    .btn-explore {
+      background: #000000;
+      border: 2px solid #000000;
+      color: white;
+      border-radius: 50px;
+      padding: 0.75rem 2rem;
+      font-weight: 700;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .btn-explore:hover {
+      background: #333333;
+      border-color: #333333;
+      color: white;
+      transform: scale(1.05);
+      text-decoration: none;
+    }
+    
+    .favorites-stats {
+      background: #000000;
+      color: white;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    
+    .favorites-stats h4 {
+      font-weight: 900;
+      margin-bottom: 1rem;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+    }
+    
+    .stat-item {
+      text-align: center;
+    }
+    
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 900;
+      color: #ffd700;
+    }
+    
+    .stat-label {
+      font-weight: 700;
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+    
+    .search-filter {
+      background: #f8f9fa;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      margin-bottom: 2rem;
+      border: 2px solid #000000;
+    }
+    
+    .search-filter h5 {
+      font-weight: 900;
+      color: #000000;
+      margin-bottom: 1rem;
+    }
+    
+    .form-control, .form-select {
+      border: 2px solid #000000;
+      border-radius: 0.5rem;
+      font-weight: 700;
+      color: #000000;
+    }
+    
+    .form-control:focus, .form-select:focus {
+      border-color: #000000;
+      box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.25);
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="index.html">
+        <i class="fas fa-utensils"></i> Food King
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="about.html">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="contact.html">Contact</a>
+          </li>
+          
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <h1 class="animate__animated animate__fadeInDown">
+        <i class="fas fa-heart"></i> My Favorites
+      </h1>
+      <p class="animate__animated animate__fadeInUp animate__delay-1s">
+        Discover and manage your favorite dishes
+      </p>
+    </div>
+  </section>
+
+  <!-- Favorites Stats -->
+  <div class="container">
+    <div class="favorites-stats animate__animated animate__fadeInUp animate__delay-2s">
+      <h4><i class="fas fa-chart-bar"></i> Favorites Overview</h4>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number" id="totalFavorites">0</div>
+          <div class="stat-label">Total Favorites</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" id="totalLikes">0</div>
+          <div class="stat-label">Total Likes</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" id="avgRating">0</div>
+          <div class="stat-label">Avg Rating</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search and Filter -->
+    <div class="search-filter animate__animated animate__fadeInUp animate__delay-3s">
+      <h5><i class="fas fa-search"></i> Search & Filter</h5>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <input type="text" class="form-control" id="searchFavorites" placeholder="Search favorites...">
+        </div>
+        <div class="col-md-3">
+          <select class="form-select" id="categoryFilter">
+            <option value="">All Categories</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <select class="form-select" id="sortBy">
+            <option value="name">Sort by Name</option>
+            <option value="price">Sort by Price</option>
+            <option value="rating">Sort by Rating</option>
+            <option value="date">Sort by Date Added</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Favorites Container -->
+    <div class="favorites-container">
+      <div id="favoritesGrid" class="row g-4">
+        <!-- Favorites will be loaded here -->
+      </div>
+      
+      <!-- Empty State -->
+      <div id="emptyFavorites" class="empty-favorites animate__animated animate__fadeIn" style="display: none;">
+        <h3><i class="fas fa-heart-broken"></i> No Favorites Yet</h3>
+        <p>Start adding dishes to your favorites to see them here!</p>
+        <a href="index.html" class="btn-explore">
+          <i class="fas fa-utensils me-2"></i>Explore Menu
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- LocalStorage Service -->
+  <script src="localStorageService.js"></script>
+  
+  <script>
+    let favorites = [];
+    let likedItems = new Set();
+    
+    // Load favorites from localStorage
+    function loadFavorites() {
+      favorites = localStorageService.getAllFavorites();
+      const savedLikes = localStorage.getItem('likedItems');
+      
+      if (savedLikes) {
+        likedItems = new Set(JSON.parse(savedLikes));
+      }
+      
+      updateFavoritesUI();
+      updateStats();
+    }
+    
+    // Save favorites to localStorage
+    function saveFavorites() {
+      // Favorites are managed by localStorageService
+      localStorage.setItem('likedItems', JSON.stringify(Array.from(likedItems)));
+    }
+    
+    // Update favorites UI
+    function updateFavoritesUI() {
+      const grid = document.getElementById('favoritesGrid');
+      const emptyState = document.getElementById('emptyFavorites');
+      
+      if (favorites.length === 0) {
+        grid.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+      }
+      
+      grid.style.display = 'flex';
+      emptyState.style.display = 'none';
+      
+      // Apply search and filter
+      let filteredFavorites = applyFilters(favorites);
+      
+      // Apply sorting
+      filteredFavorites = applySorting(filteredFavorites);
+      
+      grid.innerHTML = '';
+      
+      filteredFavorites.forEach((favorite, index) => {
+        const col = document.createElement('div');
+        col.className = 'col-12 col-sm-6 col-md-4 col-lg-3';
+        
+        const isLiked = likedItems.has(favorite.name);
+        const rating = favorite.rating || 0;
+        
+        col.innerHTML = `
+          <div class="favorite-card">
+            <span class="badge badge-cat">${favorite.category}</span>
+            <img src="${favorite.img}" class="card-img-top" alt="${favorite.name}" loading="lazy">
+            <div class="card-body">
+              <h6 class="card-title">${favorite.name}</h6>
+              <p class="card-text">₹${favorite.price}</p>
+              
+              <div class="rating-section">
+                <div class="rating-stars">
+                  ${generateStars(rating)}
+                </div>
+                <span class="rating-text">${rating}/5</span>
+              </div>
+              
+              <div class="action-buttons">
+                <button class="btn btn-like ${isLiked ? 'liked' : ''}" onclick="toggleLike('${favorite.name}')">
+                  <i class="fas fa-heart"></i>
+                </button>
+                <button class="btn btn-add-to-cart" onclick="addToCartFromFavorites('${favorite.name}')">
+                  <i class="fas fa-plus"></i> Add
+                </button>
+                <button class="btn btn-remove" onclick="removeFromFavorites('${favorite.name}')">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        grid.append(col);
+      });
+    }
+    
+    // Generate star rating display
+    function generateStars(rating) {
+      let stars = '';
+      for (let i = 1; i <= 5; i++) {
+        if (i <= rating) {
+          stars += '<i class="fas fa-star"></i>';
+        } else if (i - 0.5 <= rating) {
+          stars += '<i class="fas fa-star-half-alt"></i>';
+        } else {
+          stars += '<i class="far fa-star"></i>';
+        }
+      }
+      return stars;
+    }
+    
+    // Apply search and filter
+    function applyFilters(favoritesList) {
+      const searchTerm = document.getElementById('searchFavorites').value.toLowerCase();
+      const categoryFilter = document.getElementById('categoryFilter').value;
+      
+      return favoritesList.filter(favorite => {
+        const matchesSearch = favorite.name.toLowerCase().includes(searchTerm);
+        const matchesCategory = !categoryFilter || favorite.category === categoryFilter;
+        return matchesSearch && matchesCategory;
+      });
+    }
+    
+    // Apply sorting
+    function applySorting(favoritesList) {
+      const sortBy = document.getElementById('sortBy').value;
+      
+      return favoritesList.sort((a, b) => {
+        switch (sortBy) {
+          case 'name':
+            return a.name.localeCompare(b.name);
+          case 'price':
+            return a.price - b.price;
+          case 'rating':
+            return (b.rating || 0) - (a.rating || 0);
+          case 'date':
+            return new Date(b.dateAdded || 0) - new Date(a.dateAdded || 0);
+          default:
+            return 0;
+        }
+      });
+    }
+    
+    // Toggle like status
+    function toggleLike(dishName) {
+      if (likedItems.has(dishName)) {
+        likedItems.delete(dishName);
+      } else {
+        likedItems.add(dishName);
+      }
+      
+      // Update rating based on like status
+      const favorite = favorites.find(f => f.name === dishName);
+      if (favorite) {
+        favorite.rating = likedItems.has(dishName) ? 5 : 0;
+      }
+      
+      saveFavorites();
+      updateFavoritesUI();
+      updateStats();
+    }
+    
+    // Remove from favorites
+    function removeFromFavorites(dishName) {
+      const favorite = favorites.find(f => f.name === dishName);
+      if (favorite && favorite.id) {
+        localStorageService.removeFromFavorites(favorite.id);
+        favorites = localStorageService.getAllFavorites();
+      }
+      likedItems.delete(dishName);
+      
+      saveFavorites();
+      updateFavoritesUI();
+      updateStats();
+      
+      // Update navbar count
+      document.getElementById('favCount').textContent = favorites.length;
+    }
+    
+    // Add to cart from favorites
+    function addToCartFromFavorites(dishName) {
+      // This would integrate with your cart system
+      alert(`Added ${dishName} to cart!`);
+    }
+    
+    // Update statistics
+    function updateStats() {
+      document.getElementById('totalFavorites').textContent = favorites.length;
+      document.getElementById('totalLikes').textContent = likedItems.size;
+      
+      const avgRating = favorites.length > 0 
+        ? (favorites.reduce((sum, f) => sum + (f.rating || 0), 0) / favorites.length).toFixed(1)
+        : 0;
+      document.getElementById('avgRating').textContent = avgRating;
+    }
+    
+    // Populate category filter
+    function populateCategoryFilter() {
+      const categoryFilter = document.getElementById('categoryFilter');
+      const categories = [...new Set(favorites.map(f => f.category))];
+      
+      categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category;
+        categoryFilter.appendChild(option);
+      });
+    }
+    
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', () => {
+      loadFavorites();
+      populateCategoryFilter();
+      
+      // Search and filter event listeners
+      document.getElementById('searchFavorites').addEventListener('input', updateFavoritesUI);
+      document.getElementById('categoryFilter').addEventListener('change', updateFavoritesUI);
+      document.getElementById('sortBy').addEventListener('change', updateFavoritesUI);
+    });
+  </script>
+</body>
+</html>
